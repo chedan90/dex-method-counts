@@ -1,0 +1,41 @@
+#Created by chedan90 on 3/26/17.
+
+a=$1
+flag=${a:0-4}
+path=`pwd`/.out_dex_fuck/
+# echo $path
+if [ "$flag" == ".apk" ];
+	then
+	# echo 'is apk'
+	unzip -o $1  classes*.dex -d $path > /dev/null
+	dexs_count=`cd $path;ls -1|grep classes.*\.dex |wc -l`
+	# echo $dexs_count
+	for (( i = 1; i < $dexs_count+1; i++ )); do
+		
+		if [[ $i == 1 ]]; then
+			count=`hexdump -C ${path}classes.dex | head -6 | grep 00000050 | awk -F ' ' '{print $13$12$11$10}'`
+			((value=16#$count))
+			echo 'classes.dex '$value
+			continue
+		fi
+		count=`hexdump -C ${path}classes${i}.dex | head -6 | grep 00000050 | awk -F ' ' '{print $13$12$11$10}'`
+		((value=16#$count))
+		file=classes$i.dex
+		echo $file $value
+
+	done
+	rm -rf $path
+fi
+
+if [ "$flag" == ".dex" ];
+	then 
+	# echo 'is dex'
+	count=`hexdump -C $1 | head -6 | grep 00000050 | awk -F ' ' '{print $13$12$11$10}'`
+	((value=16#$count))
+	echo $1 $value
+fi
+
+if [ $a == "-help" ];
+       then 
+       echo 'usage: method_count.sh xxx.apk or method_count.sh xxx.dex'
+fi
