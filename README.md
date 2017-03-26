@@ -1,2 +1,2 @@
 # dex-method-counts
-计算dex方法总数
+快速计算dex方法总数
